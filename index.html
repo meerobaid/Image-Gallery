@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div id="previous-operand" class="previous-operand"></div>
+            <div id="current-operand" class="current-operand">0</div>
+        </div>
+        <button class="span-two" data-action="clear">AC</button>
+        <button data-action="delete">DEL</button>
+        <button data-action="operation" data-operation="÷">÷</button>
+        <button data-action="operation" data-operation="×">×</button>
+        <button data-action="number">7</button>
+        <button data-action="number">8</button>
+        <button data-action="number">9</button>
+        <button data-action="operation" data-operation="-">-</button>
+        <button data-action="number">4</button>
+        <button data-action="number">5</button>
+        <button data-action="number">6</button>
+        <button data-action="operation" data-operation="+">+</button>
+        <button data-action="number">1</button>
+        <button data-action="number">2</button>
+        <button data-action="number">3</button>
+        <button class="span-two" data-action="equals">=</button>
+        <button data-action="number">0</button>
+        <button data-action="number">.</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
