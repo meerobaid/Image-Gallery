@@ -3,34 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Calculator</title>
+    <title>Image Gallery</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="calculator">
-        <div class="display">
-            <div id="previous-operand" class="previous-operand"></div>
-            <div id="current-operand" class="current-operand">0</div>
+    <div class="gallery-container">
+        <h1>My Image Gallery</h1>
+        <input type="text" id="search-input" placeholder="Search images...">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="nature">Nature</button>
+            <button class="filter-btn" data-filter="city">City</button>
+            <button class="filter-btn" data-filter="animals">Animals</button>
         </div>
-        <button class="span-two" data-action="clear">AC</button>
-        <button data-action="delete">DEL</button>
-        <button data-action="operation" data-operation="÷">÷</button>
-        <button data-action="operation" data-operation="×">×</button>
-        <button data-action="number">7</button>
-        <button data-action="number">8</button>
-        <button data-action="number">9</button>
-        <button data-action="operation" data-operation="-">-</button>
-        <button data-action="number">4</button>
-        <button data-action="number">5</button>
-        <button data-action="number">6</button>
-        <button data-action="operation" data-operation="+">+</button>
-        <button data-action="number">1</button>
-        <button data-action="number">2</button>
-        <button data-action="number">3</button>
-        <button class="span-two" data-action="equals">=</button>
-        <button data-action="number">0</button>
-        <button data-action="number">.</button>
+        <div class="gallery"></div>
     </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="close-btn">&times;</span>
+        <a class="download-btn" id="download-btn" download>↓ Download</a>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="">
+        <button class="prev-btn">&#10094;</button>
+        <button class="next-btn">&#10095;</button>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top">↑</button>
+
     <script src="script.js"></script>
 </body>
 </html>
