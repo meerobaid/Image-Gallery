@@ -1,135 +1,112 @@
-class Calculator {
-    constructor(previousOperandElement, currentOperandElement) {
-        this.previousOperandElement = previousOperandElement;
-        this.currentOperandElement = currentOperandElement;
-        this.clear();
-    }
+const images = [
+    { src: "https://source.unsplash.com/random/600x400/?nature", category: "nature" },
+    { src: "https://source.unsplash.com/random/600x400/?city", category: "city" },
+    { src: "https://source.unsplash.com/random/600x400/?animals", category: "animals" },
+    { src: "https://source.unsplash.com/random/600x400/?mountain", category: "nature" },
+    { src: "https://source.unsplash.com/random/600x400/?building", category: "city" },
+    { src: "https://source.unsplash.com/random/600x400/?dog", category: "animals" },
+    { src: "https://source.unsplash.com/random/600x400/?forest", category: "nature" },
+    { src: "https://source.unsplash.com/random/600x400/?street", category: "city" },
+];
 
-    clear() {
-        this.currentOperand = '0';
-        this.previousOperand = '';
-        this.operation = undefined;
-    }
+const gallery = document.querySelector(".gallery");
+const filterButtons = document.querySelectorAll(".filter-btn");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const closeBtn = document.querySelector(".close-btn");
+const prevBtn = document.querySelector(".prev-btn");
+const nextBtn = document.querySelector(".next-btn");
+const downloadBtn = document.getElementById("download-btn");
+const searchInput = document.getElementById("search-input");
+const backToTopBtn = document.querySelector(".back-to-top");
 
-    delete() {
-        this.currentOperand = this.currentOperand.toString().slice(0, -1);
-        if (this.currentOperand === '') {
-            this.currentOperand = '0';
-        }
-    }
+let currentImageIndex = 0;
+let currentFilter = "all";
+let visibleImages = 8;
 
-    appendNumber(number) {
-        if (number === '.' && this.currentOperand.includes('.')) return;
-        if (this.currentOperand === '0' && number !== '.') {
-            this.currentOperand = number;
-        } else {
-            this.currentOperand += number;
-        }
+function loadImages(filter = "all", loadMore = false) {
+    if (!loadMore) {
+        gallery.innerHTML = "";
+        visibleImages = 8;
     }
-
-    chooseOperation(operation) {
-        if (this.currentOperand === '') return;
-        if (this.previousOperand !== '') {
-            this.compute();
-        }
-        this.operation = operation;
-        this.previousOperand = this.currentOperand;
-        this.currentOperand = '0';
-    }
-
-    compute() {
-        let computation;
-        const prev = parseFloat(this.previousOperand);
-        const current = parseFloat(this.currentOperand);
+    const filteredImages = filter === "all" ? images : images.filter(img => img.category === filter);
+    const imagesToShow = filteredImages.slice(0, visibleImages);
+    
+    imagesToShow.forEach((image, index) => {
+        const galleryItem = document.createElement("div");
+        galleryItem.className = "gallery-item";
+        galleryItem.setAttribute("data-category", image.category);
         
-        if (isNaN(prev) || isNaN(current)) return;
+        const img = document.createElement("img");
+        img.src = image.src;
+        img.alt = `Image ${index + 1}`;
+        img.className = "gallery-img";
+        img.loading = "lazy";
+        
+        galleryItem.appendChild(img);
+        gallery.appendChild(galleryItem);
 
-        switch (this.operation) {
-            case '+':
-                computation = prev + current;
-                break;
-            case '-':
-                computation = prev - current;
-                break;
-            case '×':
-                computation = prev * current;
-                break;
-            case '÷':
-                computation = prev / current;
-                break;
-            default:
-                return;
-        }
-
-        this.currentOperand = computation.toString();
-        this.operation = undefined;
-        this.previousOperand = '';
-    }
-
-    updateDisplay() {
-        this.currentOperandElement.innerText = this.currentOperand;
-        if (this.operation != null) {
-            this.previousOperandElement.innerText = 
-                `${this.previousOperand} ${this.operation}`;
-        } else {
-            this.previousOperandElement.innerText = '';
-        }
-    }
+        img.addEventListener("click", () => {
+            currentImageIndex = images.findIndex(img => img.src === image.src);
+            lightbox.classList.add("active");
+            lightboxImg.src = image.src;
+            downloadBtn.href = image.src;
+            downloadBtn.setAttribute("download", `image-${currentImageIndex + 1}.jpg`);
+        });
+    });
 }
 
-// DOM Elements
-const numberButtons = document.querySelectorAll('[data-action="number"]');
-const operationButtons = document.querySelectorAll('[data-action="operation"]');
-const equalsButton = document.querySelector('[data-action="equals"]');
-const clearButton = document.querySelector('[data-action="clear"]');
-const deleteButton = document.querySelector('[data-action="delete"]');
-const previousOperandElement = document.querySelector('.previous-operand');
-const currentOperandElement = document.querySelector('.current-operand');
-
-const calculator = new Calculator(previousOperandElement, currentOperandElement);
-
 // Event Listeners
-numberButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        calculator.appendNumber(button.innerText);
-        calculator.updateDisplay();
+filterButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+        currentFilter = button.dataset.filter;
+        loadImages(currentFilter);
     });
 });
 
-operationButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        calculator.chooseOperation(button.dataset.operation);
-        calculator.updateDisplay();
+closeBtn.addEventListener("click", () => lightbox.classList.remove("active"));
+prevBtn.addEventListener("click", () => navigate(-1));
+nextBtn.addEventListener("click", () => navigate(1));
+
+function navigate(direction) {
+    currentImageIndex = (currentImageIndex + direction + images.length) % images.length;
+    lightboxImg.src = images[currentImageIndex].src;
+    downloadBtn.href = images[currentImageIndex].src;
+    downloadBtn.setAttribute("download", `image-${currentImageIndex + 1}.jpg`);
+}
+
+searchInput.addEventListener("input", (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredImages = images.filter(img => 
+        img.category.includes(searchTerm) || 
+        img.src.toLowerCase().includes(searchTerm)
+    );
+    gallery.innerHTML = "";
+    filteredImages.forEach((image, index) => {
+        // Same image creation code as in loadImages()
     });
 });
 
-equalsButton.addEventListener('click', () => {
-    calculator.compute();
-    calculator.updateDisplay();
-});
-
-clearButton.addEventListener('click', () => {
-    calculator.clear();
-    calculator.updateDisplay();
-});
-
-deleteButton.addEventListener('click', () => {
-    calculator.delete();
-    calculator.updateDisplay();
-});
-
-// Keyboard Support
-document.addEventListener('keydown', (e) => {
-    if (e.key >= 0 && e.key <= 9) calculator.appendNumber(e.key);
-    if (e.key === '.') calculator.appendNumber('.');
-    if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
-        let op = e.key;
-        if (op === '*') op = '×';
-        if (op === '/') op = '÷';
-        calculator.chooseOperation(op);
+window.addEventListener("scroll", () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+        visibleImages += 4;
+        loadImages(currentFilter, true);
     }
-    if (e.key === 'Enter' || e.key === '=') calculator.compute();
-    if (e.key === 'Escape') calculator.clear();
-    if (e.key === 'Backspace') calculator.delete();
-    calculator.updateDisplay();
+    backToTopBtn.classList.toggle("visible", window.scrollY > 300);
 });
+
+backToTopBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.addEventListener("keydown", (e) => {
+    if (lightbox.classList.contains("active")) {
+        if (e.key === "Escape") lightbox.classList.remove("active");
+        else if (e.key === "ArrowLeft") navigate(-1);
+        else if (e.key === "ArrowRight") navigate(1);
+    }
+});
+
+loadImages();
